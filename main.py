@@ -9,6 +9,10 @@ info = pygame.display.Info()
 screen_width , screen_height = info.current_w , info.current_h
 window_width , window_height = screen_width - 800 , screen_height - 150
 
+#fonts
+font = pygame.font.Font('freesansbold.ttf', 50)
+font2 = pygame.font.Font('freesansbold.ttf', 30)
+
 
 timer = pygame.time.Clock()
 fps = 60
@@ -201,6 +205,9 @@ class Barrel(pygame.sprite.Sprite):
 
     def draw(self):
         screen.blit(pygame.transform.rotate(barrel_img, 90 * self.pos), self.rect.topleft)
+
+#flame class
+
 
 #bridge class
 class Bridge:
