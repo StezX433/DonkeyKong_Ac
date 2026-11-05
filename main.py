@@ -20,6 +20,51 @@ section_width = window_width // 32
 section_height = window_height // 32
 slope = section_height // 8
 
+
+barrel_spawn_time = 360
+barrel_count = barrel_spawn_time / 2
+barrel_time = 360
+barrel_img = pygame.transform.scale(
+    pygame.image.load('assets/images/barrels/barrel.png'),
+    (section_width * 1.5, section_height * 2)
+)
+flames_img = pygame.transform.scale(pygame.image.load('assets/images/fire.png'),
+                                    (section_width * 2, section_height))
+barrel_side = pygame.transform.scale(pygame.image.load('assets/images/barrels/barrel2.png'),
+                                     (section_width * 2, section_height * 2.5))
+dk1 = pygame.transform.scale(pygame.image.load('assets/images/dk/dk1.png'),
+                             (section_width * 5, section_height * 5))
+dk2 = pygame.transform.scale(pygame.image.load('assets/images/dk/dk2.png'),
+                             (section_width * 5, section_height * 5))
+dk3 = pygame.transform.scale(pygame.image.load('assets/images/dk/dk3.png'),
+                             (section_width * 5, section_height * 5))
+peach1 = pygame.transform.scale(pygame.image.load('assets/images/peach/peach1.png'),
+                                (2 * section_width, 3 * section_height))
+peach2 = pygame.transform.scale(pygame.image.load('assets/images/peach/peach2.png'),
+                                (2 * section_width, 3 * section_height))
+fireball = pygame.transform.scale(pygame.image.load('assets/images/fireball.png'),
+                                  (1.5 * section_width, 2 * section_height))
+fireball2 = pygame.transform.scale(pygame.image.load('assets/images/fireball2.png'),
+                                   (1.5 * section_width, 2 * section_height))
+hammer = pygame.transform.scale(pygame.image.load('assets/images/hammer.png'),
+                                   (2 * section_width, 2 * section_height))
+standing = pygame.transform.scale(pygame.image.load('assets/images/mario/standing.png'),
+                                  (2 * section_width, 2.5 * section_height))
+jumping = pygame.transform.scale(pygame.image.load('assets/images/mario/jumping.png'),
+                                 (2 * section_width, 2.5 * section_height))
+running = pygame.transform.scale(pygame.image.load('assets/images/mario/running.png'),
+                                 (2 * section_width, 2.5 * section_height))
+climbing1 = pygame.transform.scale(pygame.image.load('assets/images/mario/climbing1.png'),
+                                   (2 * section_width, 2.5 * section_height))
+climbing2 = pygame.transform.scale(pygame.image.load('assets/images/mario/climbing2.png'),
+                                   (2 * section_width, 2.5 * section_height))
+hammer_stand = pygame.transform.scale(pygame.image.load('assets/images/mario/hammer_stand.png'),
+                                      (2.5 * section_width, 2.5 * section_height))
+hammer_jump = pygame.transform.scale(pygame.image.load('assets/images/mario/hammer_jump.png'),
+                                     (2.5 * section_width, 2.5 * section_height))
+hammer_overhead = pygame.transform.scale(pygame.image.load('assets/images/mario/hammer_overhead.png'),
+                                         (2.5 * section_width, 3.5 * section_height))
+
 start_y = window_height - 2 * section_height
 
 row2_y = start_y - 4 * section_height
@@ -34,7 +79,7 @@ row4_top = row4_y - 8 * slope
 row3_top = row3_y - 8 * slope
 row2_top = row2_y - 8 * slope
 row1_top = start_y - 5 * slope
-
+fireball_trigger = False
 active_level = 0
 
 
@@ -76,6 +121,81 @@ levels = [{'bridges': [(1, start_y, 15), (16, start_y - slope, 3),
           'hammers': [(4, row6_top + section_height), (4, row4_top+section_height)],
            'target': (13, row6_y - 4 * section_height, 3)}]
 
+# barrels class
+class Barrel(pygame.sprite.Sprite):
+    def __init__(self, x_pos, y_pos):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.Surface((50, 50))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x_pos, y_pos)
+
+        self.y_change = 0
+        self.x_change = 1
+        self.pos = 0
+        self.count = 0
+        self.oil_collision = False
+        self.falling = False
+        self.check_lad = False
+        self.bottom = self.rect
+
+    def draw(self):
+        screen.blit(
+            pygame.transform.rotate(barrel_img, 90 * self.pos),
+            self.rect.topleft
+        )
+        
+    def update(self, fire_trig):
+        if self.y_change < 8 and not self.falling:
+            barrel.y_change += 2
+
+        for i in range(len(plats)):
+            if self.bottom.colliderect(plats[i]):
+                self.y_change = 0
+                self.falling = False
+
+        if self.rect.colliderect(oil_drum):
+            if not self.oil_collision:
+                self.oil_collision = True
+                if random.randint(0, 4) == 4:
+                    fire_trig = True
+
+        if not self.falling:
+            if row5_top >= self.rect.bottom or row3_top >= self.rect.bottom >= row4_top or row1_top >= self.rect.bottom:
+                self.x_change = 3
+            else:
+                self.x_change = -3
+        else:
+            self.x_change = 0
+            
+        return fire_trig
+    def check_fall(self):
+        already_collided = False
+
+        below = pygame.rect.Rect(
+            (self.rect[0], self.rect[1] + section_height),
+            (self.rect[2], section_height)
+        )
+
+        for lad in lads:
+            if below.colliderect(lad) and not self.falling and not self.check_lad:
+                self.check_lad = True
+                already_collided = True
+
+                if random.randint(0, 60) == 60:
+                    self.falling = True
+                    self.y_change = 4
+
+        if not already_collided:
+            self.check_lad = False
+
+    def draw(self):
+        screen.blit(
+            pygame.transform.rotate(barrel_img, 90 * self.pos),
+            self.rect.topleft
+        )
+        
+    
 
 #bridge class
 class Bridge:
@@ -204,12 +324,21 @@ def draw_screen():
 
 #sprite class
 barrels = pygame.sprite.Group()
-
+oil_drum = pygame.rect.Rect((1,1),(1,1))
 
 run = True
 while run:
     screen.fill('black')
     timer.tick(fps)
+    if barrel_count < barrel_spawn_time:
+        barrel_count += 1
+
+    else:
+        barrel_count = random.randint(0, 120)
+        barrel_time = barrel_count - barrel_spawn_time
+
+        barrel = Barrel(270, 270)
+        barrels.add(barrel)
     
     #draw platforms and ladder on to the screen using dedicated functions
     plats = draw_screen()
