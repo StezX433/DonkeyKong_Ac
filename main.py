@@ -71,7 +71,7 @@ class Bridge:
             (self.length * section_width, 2)
         )
 
-        pygame.draw.rect(screen, 'blue', top_line)
+        # pygame.draw.rect(screen, 'blue', top_line)
 
         return top_line
     
@@ -79,7 +79,16 @@ class Bridge:
     
 #function to draw ladders and platforms
 def draw_screen():
-    pass
+    bridges_list = [(2,500,5)]
+    bridge_objs = []
+    ladders_list = [] 
+    
+    for bridge in bridges_list:
+        bridge_objs.append(Bridge(*bridge))
+        
+        
+        
+    
 
 
 
