@@ -135,7 +135,27 @@ levels = [{'bridges': [(1, start_y, 15), (16, start_y - slope, 3),
           'hammers': [(4, row6_top + section_height), (4, row4_top+section_height)],
            'target': (13, row6_y - 4 * section_height, 3)}]
 
-# barrels class
+#hammer class
+class Hammer(pygame.sprite.Sprite):
+    def __init__(self, x_pos, y_pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = hammer
+        self.rect = self.image.get_rect()
+        self.rect.top = y_pos
+        self.rect.left = x_pos * section_width
+        self.used = False
+
+    def draw(self):
+        if not self.used:
+            screen.blit(self.image, (self.rect[0], self.rect[1]))
+            if self.rect.colliderect(player.hitbox):
+                self.kill()
+                player.hammer = True
+                player.hammer_len = player.max_hammer
+                self.used = True
+
+
+#barrels class
 class Barrel(pygame.sprite.Sprite):
     def __init__(self, x_pos, y_pos):
         pygame.sprite.Sprite.__init__(self)
