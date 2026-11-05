@@ -20,6 +20,20 @@ section_width = window_width // 32
 section_height = window_height // 32
 slope = section_height // 8
 
+start_y = window_height - 2 * section_height
+
+row2_y = start_y - 4 * section_height
+row3_y = row2_y - 7 * slope - 3 * section_height
+row4_y = row3_y - 4 * section_height
+row5_y = row4_y - 7 * slope - 3 * section_height
+row6_y = row5_y - 4 * section_height
+
+row6_top = row6_y - 4 * slope
+row5_top = row5_y - 8 * slope
+row4_top = row4_y - 8 * slope
+row3_top = row3_y - 8 * slope
+row2_top = row2_y - 8 * slope
+row1_top = start_y - 5 * slope
 
 class Bridge:
     def __init__(self , x_pos , y_pos , length):
