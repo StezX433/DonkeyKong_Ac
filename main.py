@@ -202,6 +202,8 @@ def draw_screen():
 
     return platforms, climbers
 
+#sprite class
+barrels = pygame.sprite.Group()
 
 
 run = True
