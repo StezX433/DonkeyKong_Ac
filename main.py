@@ -77,7 +77,7 @@ levels = [{'bridges': [(1, start_y, 15), (16, start_y - slope, 3),
            'target': (13, row6_y - 4 * section_height, 3)}]
 
 
-
+#bridge class
 class Bridge:
     def __init__(self , x_pos , y_pos , length):
         self.x_pos = x_pos * section_width
@@ -132,24 +132,75 @@ class Bridge:
 
         return top_line
     
-    
-    
-#function to draw ladders and platforms
+#ladder class
+class Ladder:
+    def __init__(self,x_pos,y_pos,length):
+        self.x_pos = x_pos * section_width
+        self.y_pos = y_pos
+        self.length = length
+        self.body = self.draw()
+        
+    def draw(self):
+        line_width = 3
+        lad_color = 'light blue'
+        lad_height = 0.6
+
+        for i in range(self.length):
+            top_coord = self.y_pos + lad_height * section_height * i
+            bot_coord = top_coord + lad_height * section_height
+            mid_coord = (lad_height / 2)*section_height + top_coord
+            left_coord = self.x_pos
+            right_coord = left_coord + section_width
+
+            pygame.draw.line(
+                screen, lad_color,
+                (left_coord, top_coord),
+                (left_coord, bot_coord),
+                line_width
+            )
+
+            pygame.draw.line(
+                screen, lad_color,
+                (right_coord, top_coord),
+                (right_coord, bot_coord),
+                line_width
+            )
+
+            pygame.draw.line(
+                screen, lad_color,
+                (left_coord, mid_coord),
+                (right_coord, mid_coord),
+                line_width
+            )
+
+        body = pygame.rect.Rect(
+            (self.x_pos, self.y_pos - section_height),
+            (section_width, (lad_height * self.length + section_height))
+        )
+
+        return body
+        
+        
+# function to draw platforms and ladders
 def draw_screen():
     platforms = []
-    ladders_list = []
+    climbers = []
+    ladder_objs = []
     bridge_objs = []
 
     ladders = levels[active_level]['ladders']
     bridges = levels[active_level]['bridges']
 
+    for ladder in ladders:
+        ladder_objs.append(Ladder(*ladder))
+        if ladder[2] >= 3:
+            climbers.append(ladder_objs[-1].body)
+
     for bridge in bridges:
         bridge_objs.append(Bridge(*bridge))
         platforms.append(bridge_objs[-1].top)
 
-    return platforms       
-        
-    
+    return platforms, climbers
 
 
 
