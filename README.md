@@ -64,7 +64,7 @@ DonkeyKong/
 ├── requirements.txt
 └── README.md
 ```
-
+...
 ## Installation and Execution
 
 ### 1. Clone the Repository
